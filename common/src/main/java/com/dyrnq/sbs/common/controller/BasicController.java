@@ -20,13 +20,13 @@ public class BasicController {
     private BasicService basicService;
 
     @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDTO getRequest(){
+    public ResponseDTO getRequest() {
         log.info("Basic controller : getRequest method");
         return basicService.getMethod();
     }
 
     @RequestMapping(value = "/post", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDTO postRequest(@RequestBody RequestDTO<RequestData> requestDTO){
+    public ResponseDTO postRequest(@RequestBody RequestDTO<RequestData> requestDTO) {
         log.info("Basic controller : postRequest method");
         return basicService.postMethod(requestDTO);
     }

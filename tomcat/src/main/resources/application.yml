@@ -5,3 +5,9 @@ server:
     keep-alive-timeout: -1
     max-keep-alive-requests: 200
     max-http-response-header-size: 32KB
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB

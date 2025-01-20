@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BasicService {
 
-    public ResponseDTO getMethod(){
+    public ResponseDTO getMethod() {
         ResponseDTO<ResponseData> response = new ResponseDTO<>();
         log.info("Basic service : getMethod method");
         ResponseData res = new ResponseData("get", 1);
@@ -20,7 +20,7 @@ public class BasicService {
         return response;
     }
 
-    public ResponseDTO postMethod(RequestDTO<RequestData> requestDTO){
+    public ResponseDTO postMethod(RequestDTO<RequestData> requestDTO) {
         ResponseDTO<ResponseData> response = new ResponseDTO<>();
         log.info("Basic service : postMethod method");
         ResponseData res = new ResponseData(requestDTO.getData().getField1(), requestDTO.getData().getField2());
