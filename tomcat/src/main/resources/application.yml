@@ -1,5 +1,7 @@
 server:
   port: 14582
+  max-http-request-header-size: 32KB
   tomcat:
     keep-alive-timeout: -1
     max-keep-alive-requests: 200
+    max-http-response-header-size: 32KB

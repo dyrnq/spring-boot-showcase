@@ -1,2 +1,3 @@
 server:
   port: 14581
+  max-http-request-header-size: 32KB

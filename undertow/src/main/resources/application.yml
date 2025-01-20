@@ -1,5 +1,6 @@
 server:
   port: 14583
+  max-http-request-header-size: 32KB
   undertow:
     always-set-keep-alive: true
 #    options:
