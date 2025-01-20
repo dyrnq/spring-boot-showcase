@@ -1,2 +1,7 @@
 server:
   port: 14583
+  undertow:
+    always-set-keep-alive: true
+#    options:
+#      server:
+#      socket:

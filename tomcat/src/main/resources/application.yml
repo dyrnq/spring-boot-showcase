@@ -1,2 +1,5 @@
 server:
   port: 14582
+  tomcat:
+    keep-alive-timeout: -1
+    max-keep-alive-requests: 200
