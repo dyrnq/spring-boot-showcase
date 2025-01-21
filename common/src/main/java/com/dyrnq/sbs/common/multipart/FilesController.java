@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +73,24 @@ public class FilesController {
             message = "Could not delete the file: " + filename + ". Error: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage(message));
         }
+    }
+
+    @RequestMapping(value = "/upload-part", method = RequestMethod.POST, consumes = {MediaType.ALL_VALUE})
+    public ResponseEntity<String> uploadPart(
+            @RequestPart(value = "token", required = false) String token,
+            @RequestPart(value = "sign", required = false) String sign,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+
+        // 处理上传的文件
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("文件未上传");
+        }
+
+        // 这里可以保存文件或进行其他处理
+        String fileName = file.getOriginalFilename();
+        // 示例：保存文件到某个路径
+        // file.transferTo(new File("/path/to/save/" + fileName));
+
+        return ResponseEntity.ok().body(String.format("上传成功: %s, Token: %s, Sign: %s", fileName, token, sign));
     }
 }
