@@ -1,5 +1,8 @@
 package com.dyrnq.sbs.common.multipart;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +85,7 @@ public class FilesController {
     public ResponseEntity<String> uploadPart(
             @RequestPart(value = "token", required = false) String token,
             @RequestPart(value = "sign", required = false) String sign,
-            @RequestPart(value = "file", required = false) MultipartFile file) {
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
         // 处理上传的文件
         if (file.isEmpty()) {
@@ -89,8 +95,10 @@ public class FilesController {
         // 这里可以保存文件或进行其他处理
         String fileName = file.getOriginalFilename();
         // 示例：保存文件到某个路径
-        // file.transferTo(new File("/path/to/save/" + fileName));
+        File saveFile = new File("uploads/" + fileName);
+        IoUtil.copy(file.getInputStream(),new FileOutputStream(saveFile));
+        String sha256Hex = DigestUtil.sha256Hex(saveFile);
 
-        return ResponseEntity.ok().body(String.format("上传成功: %s, Token: %s, Sign: %s", fileName, token, sign));
+        return ResponseEntity.ok().body(String.format("上传成功: %s, Token: %s, Sign: %s, sha256Hex: %s\n", fileName, token, sign,sha256Hex));
     }
 }
