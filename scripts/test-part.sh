@@ -5,12 +5,11 @@
 for port in 14581 14582 14583; do
   file=/tmp/random_file_$port
   dd if=/dev/urandom of=$file bs=1M count=1
+  sha256sum $file | awk '{ print $1 }'
   curl \
     -F "token=my_token" \
     -F "sign=my_sign" \
     -F "file=@${file}" \
-    -i \
-    --verbose \
     http://127.0.0.1:${port}/upload-part \
     --header "Content-Type: multipart/form-data"
 
@@ -26,6 +25,7 @@ for port in 14581 14582 14583; do
 
 fileBase64=$(base64 -w0 -i $file)
 #fileBase64=$(cat $file)
+#备注，此处不能直接使用cat,可能文件中包含一些特殊的字符，需要特殊处理，但是暂时没有找到合适的方法
 boundary="------------------------01acac3b74cbc13c"
 
 body="--$boundary\r\n"
