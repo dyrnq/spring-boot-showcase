@@ -14,3 +14,9 @@ echo "==================>${port}"
 curl -fsS -H "Accept-Encoding:gzip" http://127.0.0.1:${port}/hello/2049 | gzip --decompress
 
 done
+
+# server.compression.min-response-size=2KB
+# tomcat >= 2048
+# jetty >= 2048
+# undertow > 2048
+
