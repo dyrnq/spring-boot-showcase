@@ -1,6 +1,5 @@
 package com.dyrnq.sbs.common.multipart;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,4 +100,27 @@ public class FilesController {
 
         return ResponseEntity.ok().body(String.format("上传成功: %s, Token: %s, Sign: %s, sha256Hex: %s\n", fileName, token, sign,sha256Hex));
     }
+
+    @RequestMapping(value = "/upload-part-json", method = RequestMethod.POST, consumes = {MediaType.ALL_VALUE})
+    public ResponseEntity<String> uploadMixed(
+            @RequestPart(value = "json", required = false) PartJson json,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        String token = json!=null?json.getToken():null;
+        String sign = json!=null?json.getSign():null;
+
+        // 处理上传的文件
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("文件未上传");
+        }
+
+        // 这里可以保存文件或进行其他处理
+        String fileName = file.getOriginalFilename();
+        // 示例：保存文件到某个路径
+        File saveFile = new File("uploads/" + fileName);
+        IoUtil.copy(file.getInputStream(),new FileOutputStream(saveFile));
+        String sha256Hex = DigestUtil.sha256Hex(saveFile);
+
+        return ResponseEntity.ok().body(String.format("上传成功: %s, Token: %s, Sign: %s, sha256Hex: %s\n", fileName, token, sign,sha256Hex));
+    }
+
 }
