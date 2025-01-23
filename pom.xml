@@ -21,6 +21,7 @@
         <module>jetty</module>
         <module>undertow</module>
         <module>common</module>
+        <module>httpclient</module>
     </modules>
 
     <properties>
