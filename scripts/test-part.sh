@@ -23,27 +23,46 @@ for port in 14581 14582 14583; do
   dd if=/dev/urandom of=$file bs=1024k count=1
   sha256sum $file | awk '{ print $1 }'
 
-fileBase64=$(base64 -w0 -i $file)
-#fileBase64=$(cat $file)
-#备注，此处不能直接使用cat,可能文件中包含一些特殊的字符，需要特殊处理，但是暂时没有找到合适的方法
-boundary="------------------------01acac3b74cbc13c"
+encoding="binary"
+#encoding="base64"
 
-body="--$boundary\r\n"
-body="${body}Content-Disposition: form-data; name=\"token\"\r\n\r\n"
-body="${body}my_token\r\n"
-body="${body}--$boundary\r\n"
-body="${body}Content-Disposition: form-data; name=\"sign\"\r\n\r\n"
-body="${body}my_sign\r\n"
-body="${body}--$boundary\r\n"
-body="${body}Content-Disposition: form-data; name=\"file\"; filename=\"random_file_$port\"\r\n"
-body="${body}Content-Transfer-Encoding: base64\r\n"
-body="${body}Content-Type: application/octet-stream\r\n\r\n"
-body="${body}${fileBase64}\r\n"
-body="${body}--$boundary--\r\n"
-echo -e "${body}" > /tmp/body.http.$port
-curl -X POST \
+
+boundary="------------------------01acac3b74cbc13c"
+CRLF="\r\n"
+body="--${boundary}${CRLF}"
+body="${body}Content-Disposition: form-data; name=\"token\"${CRLF}"
+body="${body}Content-Type: text/plain; charset=UTF-8${CRLF}"
+body="${body}Content-Transfer-Encoding: 8bit${CRLF}${CRLF}"
+body="${body}my_token中文${CRLF}"
+body="${body}--${boundary}${CRLF}"
+body="${body}Content-Disposition: form-data; name=\"sign\"${CRLF}"
+body="${body}Content-Type: text/plain; charset=UTF-8${CRLF}"
+body="${body}Content-Transfer-Encoding: 8bit${CRLF}${CRLF}"
+body="${body}my_sign${CRLF}"
+body="${body}--${boundary}${CRLF}"
+body="${body}Content-Disposition: form-data; name=\"file\"; filename=\"random_file_$port\"${CRLF}"
+body="${body}Content-Type: application/octet-stream${CRLF}"
+body="${body}Content-Transfer-Encoding: ${encoding}${CRLF}${CRLF}"
+
+echo -e -n "${body}" > /tmp/body.http.$port
+
+if [ "${encoding}" = "binary" ]; then
+  cat $file >> /tmp/body.http.$port
+else
+  base64 -w0 -i $file >> /tmp/body.http.$port
+fi
+
+(
+  echo -e -n "${CRLF}"
+  echo -e -n "--${boundary}--"
+  echo -e -n "${CRLF}"
+)>> /tmp/body.http.$port
+
+
+curl \
+-X POST \
 http://127.0.0.1:${port}/upload-part \
--H "Content-Type: multipart/form-data; boundary=$boundary" \
+-H "Content-Type: multipart/form-data; boundary=${boundary}" \
 --data-binary @/tmp/body.http.$port
 
 done
