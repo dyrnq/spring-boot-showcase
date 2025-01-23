@@ -2,6 +2,8 @@ server:
   port: 14582
   max-http-request-header-size: 32KB
  # forward-headers-strategy: FRAMEWORK
+  compression:
+    enabled: true
   tomcat:
     keep-alive-timeout: -1
     max-keep-alive-requests: 200

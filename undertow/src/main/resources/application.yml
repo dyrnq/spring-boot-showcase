@@ -2,11 +2,15 @@ server:
   port: 14583
   max-http-request-header-size: 32KB
  # forward-headers-strategy: FRAMEWORK
+  compression:
+    enabled: true
   undertow:
     always-set-keep-alive: true
 #    options:
 #      server:
 #      socket:
+##https://undertow.io/javadoc/2.0.x/io/undertow/UndertowOptions.html
+##https://docs.jboss.org/xnio/3.0.4.GA/api/org/xnio/Options.html
 
 spring:
   servlet:

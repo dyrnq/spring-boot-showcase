@@ -5,12 +5,11 @@ import com.dyrnq.sbs.common.dto.RequestData;
 import com.dyrnq.sbs.common.dto.ResponseDTO;
 import com.dyrnq.sbs.common.service.BasicService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -30,4 +29,10 @@ public class BasicController {
         log.info("Basic controller : postRequest method");
         return basicService.postMethod(requestDTO);
     }
+
+    @GetMapping(value = "/hello/{length}", produces = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<String> hello(@PathVariable int length) {
+        return ResponseEntity.ok().body(StringUtils.repeat("0", length));
+    }
+
 }
