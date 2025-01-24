@@ -13,6 +13,12 @@ docker rm -f $name 2>/dev/null 1>/dev/null || true
 
 
 cat >$HOME/nginx-$port.conf<<EOF
+
+upstream backend {
+   least_conn;
+   server host.docker.internal:$upstream_port;
+}
+
 server {
 listen $port;
 
@@ -22,7 +28,12 @@ listen $port;
 #    set_real_ip_from  ::/0;
 
 location / {
-  proxy_pass http://host.docker.internal:$upstream_port;
+  root /usr/share/nginx/html;
+}
+
+location /api/ {
+  rewrite ^/api/(.*)$ /\$1 break;
+  proxy_pass http://backend;
   proxy_http_version 1.1;
   proxy_set_header Connection "";
   proxy_set_header Host \$host;
@@ -44,7 +55,7 @@ location / {
   proxy_ssl_ciphers HIGH:!aNULL:!MD5;
   proxy_ssl_verify off;
   proxy_set_header cookie \$http_cookie;
-
+  chunked_transfer_encoding off;
   port_in_redirect off;
   absolute_redirect off;
 }
@@ -57,6 +68,7 @@ EOF
   --restart always \
   --add-host=host.docker.internal:host-gateway \
   -p $port:$port \
+  -v ./html:/usr/share/nginx/html \
   -v $HOME/nginx-$port.conf:/etc/nginx/conf.d/default.conf \
   nginx
 done
@@ -71,11 +83,11 @@ for port in 24581 24582 24583; do
     -H "X-Forwarded-For: 203.0.113.195" \
     -H "X-Forwarded-Proto: http" \
     -H "X-Forwarded-Host: example.com" \
-    http://127.0.0.1:${port}/ip
+    http://127.0.0.1:${port}/api/ip
   echo ""
 
   echo "************"
-  curl -fiSL http://127.0.0.1:${port}/ip
+  curl -fiSL http://127.0.0.1:${port}/api/ip
   echo ""
 
 done

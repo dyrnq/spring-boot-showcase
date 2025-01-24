@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>File Upload with JSON Data</title>
+    <script src="js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2><a href="index.html">back</a></h2><br/>
+
+<form enctype="multipart/form-data" id="uploadForm">
+    token: <input id="token" name="token" type="text" value="my_token中文"> <br/><br/>
+    sign: <input id="sign" name="sign" type="text" value="my_sign"> <br/><br/>
+    file: <input id="file" name="file" type="file"><br/><br/>
+    <button type="submit">Upload</button>
+</form>
+<br/>
+<div id="msg"></div>
+
+<script>
+    $(document).ready(function() {
+        $('#uploadForm').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            formData.append('json',
+             new Blob([
+                JSON.stringify({token: $("#token").val(),sign: $("#sign").val()})
+                ], {
+                  type: 'application/json'
+               })
+             );
+            formData.delete('token');
+            formData.delete('sign');
+
+            $.ajax({
+                url: 'api/upload-part-json', // 替换为实际的上传 URL
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Upload successful:', response);
+                    //alert('Upload successful:'+ response);
+                    $('#msg').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Upload error:', error);
+                    $('#msg').html('Upload error: ' + error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
