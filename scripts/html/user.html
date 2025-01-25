@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>File Upload with JSON Data</title>
+    <script src="js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2><a href="index.html">back</a></h2><br/>
+<form enctype="multipart/form-data" id="uploadForm">
+    name: <input id="name" name="name" type="text" value="小明"><br/><br/>
+    phone: <input id="phone" name="phone" type="text" value="136999999"><br/><br/>
+    address: <input id="address" name="address" type="text" value="测试"><br/><br/>
+    age: <input id="age" name="age" type="text" value="11"><br/><br/>
+    remark: <input id="remark" name="remark" type="text" value="备注"><br/><br/>
+    <button type="submit">Upload</button>
+</form>
+<br/>
+<div id="msg"></div>
+
+<script>
+    $(document).ready(function() {
+        $('#uploadForm').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            $.ajax({
+                url: 'api/user/add', // 替换为实际的上传 URL
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Add successful:', response);
+                    //alert('Add successful:'+ response);
+                    var responseString = JSON.stringify(response);
+                    $('#msg').html(responseString);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Add error:', error);
+                    $('#msg').html('Add error: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
