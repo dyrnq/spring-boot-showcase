@@ -1,4 +1,4 @@
-package com.dyrnq.sbs.tomcat.controller;
+package com.dyrnq.sbs.common.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
