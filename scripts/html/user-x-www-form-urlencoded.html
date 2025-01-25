@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>File Upload with JSON Data</title>
+    <script src="js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2><a href="index.html">back</a></h2><br/>
+    <form id="uploadForm">
+        <input type="text" id="name" name="name" value="小明"><br/><br/>
+        <input type="text" id="phone" name="phone" value="136999999"><br/><br/>
+        <input type="text" id="address" name="address" value="测试"><br/><br/>
+        <input type="text" id="age" name="age" value="11"><br/><br/>
+        <input type="text" id="remark" name="remark" value="备注"><br/><br/>
+        <button type="submit">Upload</button>
+    </form>
+    <br/>
+    <div id="msg"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#uploadForm').submit(function(e) {
+                e.preventDefault();
+
+                var formData = {
+                    name: $('#name').val(),
+                    phone: $('#phone').val(),
+                    address: $('#address').val(),
+                    age: $('#age').val(),
+                    remark: $('#remark').val()
+                };
+
+                $.ajax({
+                    url: 'api/user/add', // 替换为实际的上传 URL
+                    type: 'POST',
+                    data: formData,
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function(response) {
+                        console.log('Add successful:', response);
+                        var responseString = JSON.stringify(response);
+                        $('#msg').html(responseString);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Add error:', error);
+                        $('#msg').html('Add error: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
