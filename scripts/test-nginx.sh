@@ -42,7 +42,8 @@ location /api/ {
   proxy_set_header X-Forwarded-Proto \$scheme;
   proxy_set_header X-Forwarded-Port  \$server_port;
   proxy_set_header X-Forwarded-Host  \$host;
-
+  proxy_hide_header X-Protocol-Hide;
+  proxy_pass_header Server;
   proxy_busy_buffers_size 512k;
   proxy_buffers 8 512k;
   proxy_buffer_size 256k;

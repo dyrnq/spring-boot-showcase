@@ -1,5 +1,6 @@
 
 server:
+  server-header: spring-boot/jetty
   port: 14581
   max-http-request-header-size: 32KB
  # forward-headers-strategy: FRAMEWORK

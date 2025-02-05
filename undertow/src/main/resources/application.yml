@@ -1,4 +1,5 @@
 server:
+  server-header: spring-boot/undertow
   port: 14583
   max-http-request-header-size: 32KB
  # forward-headers-strategy: FRAMEWORK

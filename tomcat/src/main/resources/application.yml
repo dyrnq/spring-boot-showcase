@@ -1,4 +1,5 @@
 server:
+  server-header: spring-boot/tomcat
   port: 14582
   max-http-request-header-size: 32KB
  # forward-headers-strategy: FRAMEWORK
