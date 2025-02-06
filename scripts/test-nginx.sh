@@ -15,9 +15,10 @@ docker rm -f $name 2>/dev/null 1>/dev/null || true
 cat >$HOME/nginx-$port.conf<<EOF
 
 upstream backend {
-   least_conn;
+   #least_conn;
    server host.docker.internal:$upstream_port;
-   keepalive 100;
+#   keepalive 100;
+   keepalive 32;
    keepalive_requests 1000;
    keepalive_time 1h;
    keepalive_timeout 120s;
