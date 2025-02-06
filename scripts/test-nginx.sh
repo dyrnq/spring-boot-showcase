@@ -17,10 +17,25 @@ cat >$HOME/nginx-$port.conf<<EOF
 upstream backend {
    least_conn;
    server host.docker.internal:$upstream_port;
+   keepalive 100;
+   keepalive_requests 1000;
+   keepalive_time 1h;
+   keepalive_timeout 120s;
 }
 
 server {
-listen $port;
+listen $port so_keepalive=10m:30s:10;
+
+keepalive_requests 30000;
+keepalive_time 30m;
+keepalive_timeout 150s;
+
+#net.ipv4.tcp_keepalive_time = 600
+#net.ipv4.tcp_keepalive_intvl = 30
+#net.ipv4.tcp_keepalive_probes = 5
+
+
+# [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
 
 #    real_ip_header X-Forwarded-For;
 #    real_ip_recursive off;
@@ -59,6 +74,7 @@ location /api/ {
   chunked_transfer_encoding off;
   port_in_redirect off;
   absolute_redirect off;
+  proxy_socket_keepalive on;
 }
 }
 EOF
