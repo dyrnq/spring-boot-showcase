@@ -25,7 +25,7 @@ upstream backend {
 }
 
 server {
-listen $port so_keepalive=10m:30s:10;
+listen $port reuseport backlog=8192 so_keepalive=10m:30s:10;
 
 keepalive_requests 30000;
 keepalive_time 30m;
